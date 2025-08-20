@@ -214,7 +214,6 @@ export class OpenAICompatibleTestEndpoint extends ChatEndpoint {
 		if (body?.tools) {
 			body.tools = body.tools.map(tool => {
 				if (isOpenAiFunctionTool(tool) && tool.function.parameters === undefined) {
-					tool.function.parameters = {};
 					tool.function.parameters = { type: "object", properties: {} };
 				}
 				return tool;
