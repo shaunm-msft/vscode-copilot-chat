@@ -377,6 +377,7 @@ export const executeTestOnce = async (
 	runNumber: number,
 	isInRealExtensionHost = false,
 ) => {
+	const beforeTestTime = Date.now();
 	const { opts, jsonOutputPrinter } = ctx;
 	const fetchRequestCollector = new FetchRequestCollector();
 
@@ -485,7 +486,8 @@ export const executeTestOnce = async (
 			cacheInfo: fetchRequestCollector.cacheInfo,
 			hasCacheMiss: fetchRequestCollector.hasCacheMiss,
 		};
-
+		const afterTestTime = Date.now();
+		console.log(`Test ${test.fullName} took ${afterTestTime - beforeTestTime}ms`);
 		return result;
 	} finally {
 		// (context.safeGet(ILanguageFeaturesService) as { dispose?: () => Promise<void> })?.dispose?.();
