@@ -486,11 +486,12 @@ export const executeTestOnce = async (
 			cacheInfo: fetchRequestCollector.cacheInfo,
 			hasCacheMiss: fetchRequestCollector.hasCacheMiss,
 		};
-		const afterTestTime = Date.now();
-		console.log(`Test ${test.fullName} took ${afterTestTime - beforeTestTime}ms`);
 		return result;
 	} finally {
 		// (context.safeGet(ILanguageFeaturesService) as { dispose?: () => Promise<void> })?.dispose?.();
+
+		const afterTestTime = Date.now();
+		console.log(`Test ${test.fullName} took ${afterTestTime - beforeTestTime}ms`);
 
 		await simulationTestRuntime.writeFile(shared.SIMULATION_REQUESTS_FILENAME, JSON.stringify(fetchRequestCollector.interceptedRequests.map(r => r.toJSON()), undefined, 2), shared.REQUESTS_TAG);
 
