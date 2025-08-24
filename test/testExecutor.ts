@@ -170,7 +170,12 @@ async function executeTestsUsing(ctx: SimulationTestContext, testsToRun: readonl
 			continue;
 		}
 
-		const testRun = executeTestNTimes(ctx, taskRunner, test, groupedScores, executeTestFn);
+		const testRun = Promise.race([
+			executeTestNTimes(ctx, taskRunner, test, groupedScores, executeTestFn),
+			new Promise<never>((_, reject) => {
+				setTimeout(() => reject(new Error(`Test ${test.fullName} timed out after 10 minutes`)), 10 * 60 * 1000);
+			})
+		]);
 
 		testResultsPromises.push(testRun);
 
