@@ -312,7 +312,51 @@ async function runTests(opts: SimulationOptions, jsonOutputPrinter: IJSONOutputP
 
 	console.log('Waiting on test results...');
 
-	const testResults = await Promise.all(testResultsPromises);
+	// Add 4-hour timeout with call stack dump
+	const timeoutMs = 4 * 60 * 60 * 1000; // 4 hours
+	let timeoutHandle: ReturnType<typeof setTimeout>;
+
+	const timeoutPromise = new Promise<never>((_, reject) => {
+		timeoutHandle = setTimeout(() => {
+			console.error('\n🚨 4-hour timeout reached! Dumping call stacks for outstanding work...\n');
+
+			// Generate and log call stacks
+			const error = new Error('Timeout call stack dump');
+			console.error('Main thread call stack:');
+			console.error(error.stack);
+
+			// Log details about outstanding promises
+			console.error(`\nOutstanding test promises: ${testResultsPromises.length}`);
+			testResultsPromises.forEach((promise, index) => {
+				// Try to extract test name from the promise if possible
+				console.error(`Promise ${index + 1}: ${promise.constructor.name} (likely test execution)`);
+			});
+
+			// Force garbage collection to see heap state
+			if (global.gc) {
+				console.error('\nForcing garbage collection...');
+				global.gc();
+			}
+
+			// Log memory usage
+			const memUsage = process.memoryUsage();
+			console.error('\nMemory usage:');
+			console.error(`  RSS: ${Math.round(memUsage.rss / 1024 / 1024)} MB`);
+			console.error(`  Heap Total: ${Math.round(memUsage.heapTotal / 1024 / 1024)} MB`);
+			console.error(`  Heap Used: ${Math.round(memUsage.heapUsed / 1024 / 1024)} MB`);
+			console.error(`  External: ${Math.round(memUsage.external / 1024 / 1024)} MB`);
+
+			reject(new Error(`Test execution timed out after 4 hours. ${testResultsPromises.length} tests may still be running.`));
+		}, timeoutMs);
+	});
+
+	const testResults = await Promise.race([
+		Promise.all(testResultsPromises).then(results => {
+			clearTimeout(timeoutHandle);
+			return results;
+		}),
+		timeoutPromise
+	]);
 
 	writeHeapSnapshot(opts.heapSnapshots, 'after');
 
