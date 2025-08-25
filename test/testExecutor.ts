@@ -172,8 +172,44 @@ async function executeTestsUsing(ctx: SimulationTestContext, testsToRun: readonl
 
 		const testRun = Promise.race([
 			executeTestNTimes(ctx, taskRunner, test, groupedScores, executeTestFn),
-			new Promise<never>((_, reject) => {
-				setTimeout(() => reject(new Error(`Test ${test.fullName} timed out after 10 minutes`)), 10 * 60 * 1000);
+			new Promise<ITestResult>((resolve) => {
+				setTimeout(() => {
+					// Create a timeout failure result with call stack
+					const timeoutError = new Error(`Test ${test.fullName} timed out after 10 minutes`);
+					const callStack = timeoutError.stack || 'No stack trace available';
+
+					const timeoutResult: ITestResult = {
+						test: test.fullName,
+						outcomeDirectory: '',
+						score: 0,
+						usage: { completion_tokens: 0, prompt_tokens: 0, total_tokens: 0, prompt_tokens_details: { cached_tokens: 0 } },
+						outcomes: [{
+							kind: 'failed',
+							error: `TIMEOUT: Test timed out after 10 minutes\n\nCall stack at timeout:\n${callStack}`,
+							hitContentFilter: false,
+							critical: false
+						}],
+						duration: 10 * 60 * 1000, // 10 minutes in ms
+						cacheInfo: [],
+						originalResults: [{
+							kind: 'fail',
+							message: `TIMEOUT: Test timed out after 10 minutes\n\nCall stack at timeout:\n${callStack}`,
+							contentFilterCount: 0,
+							duration: 10 * 60 * 1000,
+							usage: { completion_tokens: 0, prompt_tokens: 0, total_tokens: 0, prompt_tokens_details: { cached_tokens: 0 } },
+							outcome: {
+								kind: 'failed',
+								error: `TIMEOUT: Test timed out after 10 minutes\n\nCall stack at timeout:\n${callStack}`,
+								hitContentFilter: false,
+								critical: false
+							},
+							cacheInfo: [],
+							hasCacheMiss: false
+						}]
+					};
+
+					resolve(timeoutResult);
+				}, 10 * 60 * 1000);
 			})
 		]);
 
