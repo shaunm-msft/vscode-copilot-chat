@@ -313,6 +313,7 @@ async function runTests(opts: SimulationOptions, jsonOutputPrinter: IJSONOutputP
 	console.log('Waiting on test results...');
 
 	// Add 4-hour timeout with call stack dump
+	Error.stackTraceLimit = 50;
 	const timeoutMs = 4 * 60 * 60 * 1000; // 4 hours
 	let timeoutHandle: ReturnType<typeof setTimeout>;
 
