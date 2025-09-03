@@ -152,6 +152,29 @@
 			}
 		},
 		{
+			"name": "Run FIX test",
+			"internalConsoleOptions": "openOnSessionStart",
+			"runtimeExecutable": "npm",
+			"args": [
+				"run",
+				"simulate",
+				"--",
+				"--verbose",
+				"-n=1",
+				"-p=1",
+				"--sidebar",
+                "--model gpt-5-mini",
+				"--external-scenarios=/repos/CopilotEvaluationDataAssets/tests/fix/case-4547",
+				"--output=${workspaceFolder}/test/out/"
+
+			],
+			"request": "launch",
+			"type": "node",
+			"presentation": {
+				"group": "1_launch"
+			}
+		},
+		{
 			"type": "node",
 			"name": "Postinstall",
 			"request": "launch",
