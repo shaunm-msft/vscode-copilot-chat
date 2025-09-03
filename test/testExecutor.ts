@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as path from 'path';
+import * as v8 from 'v8';
 import { IPromptWorkspaceLabels, PromptWorkspaceLabels } from '../src/extension/context/node/resolvers/promptWorkspaceLabels';
 import { INewWorkspacePreviewContentManager, NewWorkspacePreviewContentManagerImpl } from '../src/extension/intents/node/newIntent';
 import { IntentError } from '../src/extension/prompt/node/intents';
@@ -200,6 +201,16 @@ async function executeTestNTimes(
 	const { opts } = ctx;
 
 	const outcomeDirectory = path.join(ctx.outputPath, toDirname(test.fullName));
+
+	// Take heap snapshot before test execution
+	try {
+		const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+		const heapSnapshotPath = path.join(ctx.outputPath, `heap-snapshot-${toDirname(test.fullName)}-${timestamp}.heapsnapshot`);
+		v8.writeHeapSnapshot(heapSnapshotPath);
+		console.log(`Heap snapshot saved: ${heapSnapshotPath}`);
+	} catch (error) {
+		console.warn(`Failed to take heap snapshot for test ${test.fullName}:`, error);
+	}
 
 	const testStartTime = Date.now();
 
