@@ -619,8 +619,8 @@ export namespace ConfigKey {
 		export const ProjectLabelsInline = defineExpSetting<boolean>('chat.advanced.projectLabels.inline', false, INTERNAL);
 		export const WorkspaceMaxLocalIndexSize = defineExpSetting<number>('chat.advanced.workspace.maxLocalIndexSize', 100_000, INTERNAL);
 		export const WorkspaceEnableFullWorkspace = defineExpSetting<boolean>('chat.advanced.workspace.enableFullWorkspace', true, INTERNAL);
-		export const WorkspaceEnableCodeSearch = defineExpSetting<boolean>('chat.advanced.workspace.enableCodeSearch', false, INTERNAL);
-		export const WorkspaceEnableEmbeddingsSearch = defineExpSetting<boolean>('chat.advanced.workspace.enableEmbeddingsSearch', false, INTERNAL);
+		export const WorkspaceEnableCodeSearch = defineExpSetting<boolean>('chat.advanced.workspace.enableCodeSearch', true, INTERNAL);
+		export const WorkspaceEnableEmbeddingsSearch = defineExpSetting<boolean>('chat.advanced.workspace.enableEmbeddingsSearch', true, INTERNAL);
 		export const WorkspaceUseCodeSearchInstantIndexing = defineExpSetting<boolean>('chat.advanced.workspace.useCodeSearchInstantIndexing', true, INTERNAL);
 		export const WorkspacePreferredEmbeddingsModel = defineExpSetting<string>('chat.advanced.workspace.preferredEmbeddingsModel', '', INTERNAL);
 		export const WorkspaceEnableAdoCodeSearch = defineExpSetting<boolean>('chat.advanced.workspace.enabledAdoCodeSearch', true, INTERNAL);
