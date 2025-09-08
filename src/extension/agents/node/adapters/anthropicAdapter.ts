@@ -19,6 +19,8 @@ export class AnthropicAdapterFactory implements IProtocolAdapterFactory {
 }
 
 class AnthropicAdapter implements IProtocolAdapter {
+	readonly name = 'anthropic';
+
 	// Per-request state
 	private currentBlockIndex = 0;
 	private hasTextBlock = false;
@@ -33,6 +35,8 @@ class AnthropicAdapter implements IProtocolAdapter {
 		} else if (Array.isArray(requestBody.system) && requestBody.system.length > 0) {
 			systemText = requestBody.system.map(s => s.text).join('\n');
 		}
+
+		const type = systemText.includes('You are a helpful AI assistant tasked with summarizing conversations') ? 'summary' : undefined;
 
 		// Convert Anthropic messages to Raw (TSX) messages
 		const rawMessages = anthropicMessagesToRawMessages(requestBody.messages, { type: 'text', text: systemText });
@@ -65,7 +69,8 @@ class AnthropicAdapter implements IProtocolAdapter {
 		return {
 			model: requestBody.model,
 			messages: rawMessages,
-			options
+			options,
+			type
 		};
 	}
 

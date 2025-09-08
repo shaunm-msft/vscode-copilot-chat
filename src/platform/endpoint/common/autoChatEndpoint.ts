@@ -81,10 +81,6 @@ export class AutoChatEndpoint implements IChatEndpoint {
 	}
 
 	public async makeChatRequest2(options: IMakeChatRequestOptions, token: CancellationToken): Promise<ChatResponse> {
-		return this._makeChatRequest2({ ...options, ignoreStatefulMarker: options.ignoreStatefulMarker ?? true }, token);
-	}
-
-	public async _makeChatRequest2(options: IMakeChatRequestOptions, token: CancellationToken) {
 		return this._chatMLFetcher.fetchOne({
 			requestOptions: {},
 			...options,
@@ -122,6 +118,15 @@ export class AutoChatEndpoint implements IChatEndpoint {
  * @param envService The environment service to use to check if the auto mode is enabled
  * @returns True if the auto mode is enabled, false otherwise
  */
-export function isAutoModeEnabled(expService: IExperimentationService, envService: IEnvService): boolean {
-	return !!expService.getTreatmentVariable<boolean>('copilotchatcapiautomode') || envService.isPreRelease();
+export function isAutoModelEnabled(expService: IExperimentationService, envService: IEnvService): boolean {
+	return !!expService.getTreatmentVariable<boolean>('autoModelEnabled') || envService.isPreRelease();
+}
+
+/**
+ * Checks if the auto chat model is the default model
+ * @param expService The experimentation service to use to check if the auto model is the default
+ * @returns True if the auto model is the default, false otherwise
+ */
+export function isAutoModelDefault(expService: IExperimentationService) {
+	return !!expService.getTreatmentVariable<boolean>('autoModelDefault');
 }
