@@ -20,7 +20,7 @@ import { ITelemetryService } from '../../../telemetry/common/telemetry';
 import { ITokenizerProvider } from '../../../tokenizer/node/tokenizer';
 import { ICAPIClientService } from '../../common/capiClient';
 import { IDomainService } from '../../common/domainService';
-import { IChatModelInformation } from '../../common/endpointProvider';
+import { IChatModelInformation, ModelSupportedEndpoint } from '../../common/endpointProvider';
 import { ChatEndpoint } from '../../node/chatEndpoint';
 
 export type IModelConfig = {
@@ -29,6 +29,7 @@ export type IModelConfig = {
 	version: string;
 	useDeveloperRole: boolean;
 	type: 'openai' | 'azureOpenai';
+	supported_endpoints?: ModelSupportedEndpoint[];
 	capabilities: {
 		supports: {
 			parallel_tool_calls: boolean;
@@ -111,7 +112,8 @@ export class OpenAICompatibleTestEndpoint extends ChatEndpoint {
 					max_output_tokens: modelConfig.capabilities.limits.max_output_tokens,
 					max_context_window_tokens: modelConfig.capabilities.limits.max_context_window_tokens
 				}
-			}
+			},
+			supported_endpoints: modelConfig.supported_endpoints ?? [ModelSupportedEndpoint.ChatCompletions]
 		};
 
 		super(
