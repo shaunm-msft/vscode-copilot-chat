@@ -140,7 +140,7 @@ export class OpenAICompatibleTestEndpoint extends ChatEndpoint {
 	}
 
 	override get urlOrRequestMetadata(): string {
-		return this.modelConfig.url + '?api-version=' + this.modelConfig.version;
+		return this.modelConfig.version ? this.modelConfig.url + '?api-version=' + this.modelConfig.version : this.modelConfig.url;
 	}
 
 	public getExtraHeaders(): Record<string, string> {
