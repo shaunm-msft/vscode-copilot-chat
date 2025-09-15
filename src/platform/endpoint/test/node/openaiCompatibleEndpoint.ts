@@ -271,21 +271,6 @@ export class OpenAICompatibleTestEndpoint extends ChatEndpoint {
 					});
 					body['messages'] = newMessages;
 				}
-
-				// Handle input reformatting if input exists
-				// if (body.input && Array.isArray(body.input)) {
-				// 	const newInput = body.input.map((message: any): any => {
-				// 		if (message && typeof message === 'object' && message.role === OpenAI.ChatRole.System) {
-				// 			return {
-				// 				...message,
-				// 				role: OpenAI.ChatRole.User,
-				// 			};
-				// 		} else {
-				// 			return message;
-				// 		}
-				// 	});
-				// 	body['input'] = newInput;
-				// }
 			}
 		}
 
