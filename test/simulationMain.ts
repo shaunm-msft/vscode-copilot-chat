@@ -19,7 +19,7 @@ import type * as vscodeType from 'vscode';
 import { SimpleRPC } from '../src/extension/onboardDebug/node/copilotDebugWorker/rpc';
 import { ISimulationModelConfig, createExtensionUnitTestingServices } from '../src/extension/test/node/services';
 import { CHAT_MODEL } from '../src/platform/configuration/common/configurationService';
-import { IEndpointProvider } from '../src/platform/endpoint/common/endpointProvider';
+import { IEndpointProvider, ModelSupportedEndpoint } from '../src/platform/endpoint/common/endpointProvider';
 import { IModelConfig } from '../src/platform/endpoint/test/node/openaiCompatibleEndpoint';
 import { fileSystemServiceReadAsJSON } from '../src/platform/filesystem/common/fileSystemService';
 import { LogLevel } from '../src/platform/log/common/logService';
@@ -918,6 +918,18 @@ function parseModelConfigFile(modelConfigFilePath: string): IModelConfig[] {
 			checkProperty(overrides, 'max_completion_tokens', 'number', true, true);
 		}
 
+		// Validate supported_endpoints
+		if (model.supported_endpoints) {
+			if (!Array.isArray(model.supported_endpoints)) {
+				throw new Error(`Property 'supported_endpoints' in model configuration file ${resolvedModelConfigFilePath} must be an array`);
+			}
+			for (const endpointSuffix of model.supported_endpoints) {
+				if (!Object.values(ModelSupportedEndpoint).includes(endpointSuffix as ModelSupportedEndpoint)) {
+					throw new Error(`Invalid endpoint suffix '${endpointSuffix}' in supported_endpoints for model '${modelId}'. Must be one of: ${Object.values(ModelSupportedEndpoint).join(', ')}`);
+				}
+			}
+		}
+
 		modelConfigs.push({
 			id: modelId,
 			name: model.name,
@@ -939,6 +951,7 @@ function parseModelConfigFile(modelConfigFilePath: string): IModelConfig[] {
 					max_context_window_tokens: model.capabilities?.limits?.max_context_window_tokens
 				}
 			},
+			supported_endpoints: model.supported_endpoints?.length ? model.supported_endpoints as ModelSupportedEndpoint[] : [ModelSupportedEndpoint.ChatCompletions],
 			auth: {
 				useBearerHeader: model.auth?.useBearerHeader ?? false,
 				useApiKeyHeader: model.auth?.useApiKeyHeader ?? false,
