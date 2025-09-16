@@ -58,6 +58,7 @@ export interface IModelAPIResponse {
 	version: string;
 	billing?: { is_premium: boolean; multiplier: number; restricted_to?: string[] };
 	capabilities: IChatModelCapabilities | ICompletionModelCapabilities;
+	supported_endpoints?: ModelSupportedEndpoint[];
 }
 
 export type IChatModelInformation = IModelAPIResponse & {
