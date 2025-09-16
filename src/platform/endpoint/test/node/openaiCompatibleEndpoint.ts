@@ -120,7 +120,7 @@ export class OpenAICompatibleTestEndpoint extends ChatEndpoint {
 		};
 		// configurationService.useResponsesApi should be set to true if ModelSupportedEndpoint.Responses is in modelConfig.supported_endpoints
 		if (modelInfo.supported_endpoints?.includes(ModelSupportedEndpoint.Responses)) {
-			configurationService.setConfig(ConfigKey.Internal.UseResponsesApi, true);
+			configurationService.setConfig(ConfigKey.UseResponsesApi, true);
 		}
 
 		super(
