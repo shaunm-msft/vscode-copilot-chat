@@ -36,6 +36,7 @@ export type IModelConfig = {
 			tool_calls: boolean;
 			vision: boolean;
 			prediction: boolean;
+			thinking: boolean;
 		};
 		limits: {
 			max_prompt_tokens: number;

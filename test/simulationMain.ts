@@ -890,6 +890,7 @@ function parseModelConfigFile(modelConfigFilePath: string): IModelConfig[] {
 			checkProperty(model.capabilities.supports, 'tool_calls', 'boolean', true);
 			checkProperty(model.capabilities.supports, 'vision', 'boolean', true);
 			checkProperty(model.capabilities.supports, 'prediction', 'boolean', true);
+			checkProperty(model.capabilities.supports, 'thinking', 'boolean', true);
 		}
 
 		checkProperty(model.capabilities, 'limits', 'object', true);
@@ -943,7 +944,8 @@ function parseModelConfigFile(modelConfigFilePath: string): IModelConfig[] {
 					streaming: model.capabilities?.supports?.streaming ?? false,
 					tool_calls: model.capabilities?.supports?.tool_calls ?? false,
 					vision: model.capabilities?.supports?.vision ?? false,
-					prediction: model.capabilities?.supports?.prediction ?? false
+					prediction: model.capabilities?.supports?.prediction ?? false,
+					thinking: model.capabilities?.supports?.thinking ?? false
 				},
 				limits: {
 					max_prompt_tokens: model.capabilities?.limits?.max_prompt_tokens ?? 128000,
